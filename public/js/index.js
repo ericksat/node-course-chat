@@ -8,10 +8,18 @@ socket.on('disconnect', function() {
 })
 
 socket.on('newMessage', function(message) {
-    console.log("New Message", message)
     var li = jQuery("<li></li>")
     li.text(`${message.from}: ${message.text}`)
 
+    jQuery("#messages").append(li)
+})
+
+socket.on('newLocationMessage', function(message) {
+    var li = jQuery("<li></li>")
+    var a  = jQuery("<a target='_blank'>My Current Location</a>")
+    li.text(`${message.from}: `)
+    a.attr('href', message.url)
+    li.append(a)
     jQuery("#messages").append(li)
 })
 
