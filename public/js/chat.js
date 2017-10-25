@@ -29,7 +29,7 @@ socket.on('connect', function() {
         }
     })
 
-    console.log("Connected to " + params.rooms + ", " + params.name)
+    console.log("Connected to " + params.room + ", " + params.name)
 })
 
 socket.on('disconnect', function() {
@@ -73,6 +73,16 @@ socket.on('newLocationMessage', function(message) {
     // a.attr('href', message.url)
     // li.append(a)
     // jQuery("#messages").append(li)
+})
+
+socket.on('updateUserList', (users) => {
+    users.sort()
+    var ol = jQuery("<ol></ol>")
+    users.forEach(function(user) {
+        ol.append(jQuery("<li></li>").text(user))
+    });
+
+    jQuery("#users").html(ol)
 })
 
 jQuery("#message-form").on('submit', function(e) {
