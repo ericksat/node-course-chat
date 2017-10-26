@@ -1,5 +1,17 @@
 var socket = io()
 
+var unread = 0;
+var room = "";
+var me = "";
+
+function updateTitle() {
+    let title = "Chat - " + room;
+    if (unread > 0) {
+        title += " (" + unread + ")"
+    }
+    window.document.title = title;
+}
+
 function scrollToBottom() {
     // Selectors
     var messages = jQuery("#messages")
@@ -20,6 +32,11 @@ function scrollToBottom() {
 
 socket.on('connect', function() {
     var params = jQuery.deparam(window.location.search)
+    $("#chat__sidebar__room").html(params.room)
+    room = params.room
+    me = params.name
+    unread = 0
+    updateTitle()
     socket.emit('join', params, (err) => {
         if (err) {
             alert(err);
@@ -34,6 +51,8 @@ socket.on('connect', function() {
 
 socket.on('disconnect', function() {
     console.log("Disconnected")
+    // Only runs on page refresh, so don't do anything
+    // window.location.href = "/";
 })
 
 socket.on('newMessage', function(message) {
@@ -49,10 +68,11 @@ socket.on('newMessage', function(message) {
     jQuery("#messages").append(html)
     scrollToBottom()
 
-    // var li = jQuery("<li></li>")
-    // li.text(`${formattedTime} ${message.from}: ${message.text}`)
-
-    // jQuery("#messages").append(li)
+    if (message.from !== me) {
+        unread++;
+        updateTitle()
+        document.querySelector("#audio__pop").play()
+    }
 })
 
 socket.on('newLocationMessage', function(message) {
@@ -66,13 +86,6 @@ socket.on('newLocationMessage', function(message) {
     })
 
     jQuery("#messages").append(html)
-
-    // var li = jQuery("<li></li>")
-    // var a  = jQuery("<a target='_blank'>My Current Location</a>")
-    // li.text(`${formattedTime} ${message.from}: `)
-    // a.attr('href', message.url)
-    // li.append(a)
-    // jQuery("#messages").append(li)
 })
 
 socket.on('updateUserList', (users) => {
@@ -115,4 +128,10 @@ locationBtn.on('click', function() {
         alert("Unable to fetch location, sorry.")
         locationBtn.prop('disabled', false).text("Send Location")
     })
+})
+
+// Clear unread when focusing on messageBar
+$("input[name=message]").on('focus', () => {
+    unread = 0;
+    updateTitle()
 })
