@@ -5,6 +5,15 @@
     <title>Chatroom | Course Chat App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="stylesheet" href="/css/styles.css" />
+    <style>
+        .bold {
+            font-weight: bold;
+        }
+
+        li.message:nth-child(even) {
+            background-color: #EEEEEE;
+        }
+    </style>
 </head>
 <body class="chat">
     <audio id="audio__pop">
@@ -24,7 +33,7 @@
                 <input name="message" type="text" placeholder="Message" autofocus autocomplete="off" />
                 <button>Send</button>
             </form>
-            <button id='send-location'>Send Location</button>
+            <!-- <button id='send-location'>Send Location</button> -->
         </div>
     </div>
 

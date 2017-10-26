@@ -1,3 +1,12 @@
+// TODO: Admin messages should not create a pop sound or increase unread counter. Perhaps have a different sound.
+// TODO: The room URL should not include the user name and room name in the query (localStorage?)
+// TODO: Add more test cases before refactoring.
+// TODO: Refactor code with classes.
+// TODO: Allow adding images (that would be the most awesome feature)
+// TODO: Chat history, but only with password locked rooms
+// TODO: Password locekd rooms.
+// TODO: Actual accounts, with avatars.
+
 const path = require('path')
 const http = require('http')
 const express = require('express')
@@ -20,13 +29,11 @@ app.use(express.static(publicPath));
 
 // IO BEGIN
 io.on("connection", (socket) => {
-    console.log("New user connected.")
-
     socket.on('join', (params, callback) => {
         if (!isRealString(params.name) || !isRealString(params.room)) {
             return callback("A valid name & room name are required.")
         } else {
-
+            console.log(`User ${params.name} connected to ${params.room}`)
             socket.join(params.room)
             users.removeUser(socket.id)
             users.addUser(socket.id, params.name, params.room)

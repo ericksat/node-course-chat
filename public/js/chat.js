@@ -12,6 +12,17 @@ function updateTitle() {
     window.document.title = title;
 }
 
+function appendNewMessage(html, from) {
+    jQuery("#messages").append(html)
+    scrollToBottom()
+
+    if (from !== me) {
+        unread++;
+        updateTitle()
+        document.querySelector("#audio__pop").play()
+    }
+}
+
 function scrollToBottom() {
     // Selectors
     var messages = jQuery("#messages")
@@ -61,18 +72,11 @@ socket.on('newMessage', function(message) {
     var template = jQuery("#message-template").html();
     var html = Mustache.render(template, {
         text: message.text,
-        from: message.from,
+        from: message.from !== me ? message.from : "You",
         createdAt: formattedTime
     })
 
-    jQuery("#messages").append(html)
-    scrollToBottom()
-
-    if (message.from !== me) {
-        unread++;
-        updateTitle()
-        document.querySelector("#audio__pop").play()
-    }
+    appendNewMessage(html, message.from)
 })
 
 socket.on('newLocationMessage', function(message) {
@@ -85,14 +89,25 @@ socket.on('newLocationMessage', function(message) {
         createdAt: formattedTime
     })
 
-    jQuery("#messages").append(html)
+    appendNewMessage(html, message.from)
 })
 
 socket.on('updateUserList', (users) => {
-    users.sort()
+    users.sort((a, b) => {
+        if (a === me) return -1;
+        if (b === me) return 1;
+
+        if (a < b) return -1;
+        if (a > b) return 1
+        return 0;
+    })
     var ol = jQuery("<ol></ol>")
     users.forEach(function(user) {
-        ol.append(jQuery("<li></li>").text(user))
+        if (user !== me) {
+            ol.append(jQuery("<li></li>").text(user))
+        } else {
+            ol.append(jQuery("<li></li>").text(`*${user}*`).addClass('bold'))
+        }
     });
 
     jQuery("#users").html(ol)
