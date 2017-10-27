@@ -17,9 +17,13 @@ function appendNewMessage(html, from) {
     scrollToBottom()
 
     if (from !== me) {
-        unread++;
-        updateTitle()
-        document.querySelector("#audio__pop").play()
+        if (from === "Admin") {
+            document.querySelector("#audio__admin").play()
+        } else {
+            unread++;
+            updateTitle()
+            document.querySelector("#audio__pop").play()
+        }
     }
 }
 

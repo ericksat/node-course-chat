@@ -8,22 +8,26 @@
     </head>
     <body class="centered-form">
         <div class="centered-form__form">
-            <form action="/chat.html">
+            <form id='login__form'>
                 <div class="form-field">
                     <h3>Join a chat</h3>
                 </div>
                 <div class="form-field">
                     <label>Display Name</label>
-                    <input type="text" name="name" autofocus />
+                    <input type="text" name="name" id="login__name" autofocus />
                 </div>
                 <div class="form-field">
                     <label>Room Name</label>
-                    <input type="text" name="room" />
+                    <input type="text" name="room" id="login__room" />
                 </div>
                 <div class="form-field">
                     <button>Join</button>
                 </div>
             </form>
         </div>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/js/libs/jquery-3.2.1.min.js"></script>
+        <script src="/js/login.js"></script>
     </body>
 </html>
