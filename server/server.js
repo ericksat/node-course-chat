@@ -1,6 +1,4 @@
 // TODO: Phase1: general fixes
-    // TODO: The room URL should not include the user name and room name in the query (localStorage?)
-    // TODO: Allow disconnect from room
     // TODO: Add more test cases before refactoring.
     // TODO: How to unit-test client code?
     // TODO: Refactor code with classes.
@@ -13,6 +11,8 @@
     // TODO: Allow adding images (that would be the most awesome feature)
     // TODO: Images should be resized to take less space, and deleted after a while.
     // TODO: Allow avatars for accounts (resized, but not deleted)
+// TODO: Low priority
+    // TODO: Disconnect design
 
 const path = require('path')
 const http = require('http')
@@ -93,6 +93,7 @@ io.on("connection", (socket) => {
     })
 
     socket.on('disconnect', () => {
+        // console.log("User disconnected")
         var user = users.removeUser(socket.id)
 
         if (user) {

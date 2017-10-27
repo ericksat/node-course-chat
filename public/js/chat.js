@@ -46,7 +46,14 @@ function scrollToBottom() {
 }
 
 socket.on('connect', function() {
-    var params = jQuery.deparam(window.location.search)
+    // var params = jQuery.deparam(window.location.search)
+    var params = {
+        name: localStorage.name,
+        room: localStorage.room
+    }
+    if (!params.name || !params.room) {
+        return window.location.href = "/"
+    }
     $("#chat__sidebar__room").html(params.room)
     room = params.room
     me = params.name

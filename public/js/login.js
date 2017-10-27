@@ -9,6 +9,9 @@ socket.on('connect', function() {
 class Login {
     constructor() {
         this.isConnected = false;
+        // Clear local storage
+        delete(window.localStorage.name)
+        delete(window.localStorage.room)
 
         $(document).ready((e) => {
             $("#login__form").on('submit', (e) => {
@@ -23,8 +26,9 @@ class Login {
             if (obj.error) {
                 alert("Error: " + obj.error);
             } else {
-                alert("Success!")
-                window.location.href= `/chat.html?name=${name}&room=${room}`
+                window.localStorage.name = name;
+                window.localStorage.room = room;
+                window.location.href = `/chat.html`
             }
         })
     }
