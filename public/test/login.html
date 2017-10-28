@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Unit Tests</title>
+        <link rel="stylesheet" href="/css/mocha.css">        
+        <script src="/js/libs/jquery-3.2.1.min.js"></script>
+        <script src="/js/libs/mocha.js"></script>
+        <script src="/js/libs/chai.js"></script>
+    </head>
+    <body>
+        <h1>Unit Tests</h1>
+        <div id="test"></div>
+        <div id="mocha"></div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/login.js"></script>
+<script>
+    mocha.ui('bdd');
+    mocha.reporter('html');
+    var expect = chai.expect;
+
+    describe("Testing", () => {
+        it("Should test", () => {
+            expect( $("#test").html().length).to.equal(0)
+        })
+    })
+
+    describe("Login", () => {
+        it("Should be empty at beginning", () => {
+            expect(localStorage.name).to.equal(undefined)
+            expect(localStorage.room).to.equal(undefined)
+        })
+
+        it("Should succeed at login", (done) => {
+            var name = "NameTest";
+            var room = "TestRoom";
+
+            login.tryLogin(name, room).then((obj) => {
+                expect(obj.name).to.equal(name)
+                expect(obj.room).to.equal(room)
+                expect(localStorage.name).to.equal(name)
+                expect(localStorage.room).to.equal(room)
+                done()
+            }).catch((e) => {
+                done(e)
+            })
+        })
+
+        it("Should not login with banned name", (done) => {
+            var name = "Admin";
+            var room = "TestRoom";
+
+            login.tryLogin(name, room).then((obj) => {
+                throw new Error("Did not throw proper error")
+            }).catch((e) => {
+                if (e.message === "Name is invalid or already taken.") {
+                    done()
+                } else {
+                    done(e)
+                }
+            })            
+        })
+    })
+
+    mocha.run();
+</script>
+
+    </body>
+</html>

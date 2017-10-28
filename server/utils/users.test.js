@@ -1,4 +1,4 @@
-const expect = require("expect")
+const expect = require("chai").expect;
 
 const {Users} = require('./users')
 
@@ -7,7 +7,7 @@ describe("Users", () => {
 
     beforeEach(() => {
         users = new Users();
-        users.users = [
+        users.addUsers([
             {
                 id: 1,
                 name: "Moshe",
@@ -21,46 +21,54 @@ describe("Users", () => {
                 name: "Meital",
                 room: "Node Course"
             }
-        ]
+        ]);
     })
 
     it("Should add a new user", () => {
+        var user = {id: 123, name: "Schnitzel", room: "The Office Fans"};
+        users.addUser(user.id, user.name, user.room)
+        expect(users.users.length).to.equal(4)
+    })
 
-        // var user = {id: 123, name: "Moshe", room: "The Office Fans"};
-        // users.addUser(user.id, user.name, user.room)
-        // expect(users.users).toEqual([user])
+    it("Should not add a restricted name", () => {
+        var user = {id: 123, name: "Admin", room: "The Office Fans"};
+        expect(() => users.addUser(user.id, user.name, user.room)).to.throw(Error)
+    })
+
+    it("Should not add an existing name", () => {
+        var user = {id: 123, name: "Kobi", room: "The Office Fans"};
+        expect(() => users.addUser(user.id, user.name, user.room)).to.throw(Error)
     })
 
     it("Should returns names for Node Course", () => {
         var userList = users.getUserList("Node Course")
-        expect(userList).toEqual(["Moshe", "Meital"])
+        expect(userList).to.have.members(["Moshe", "Meital"])
     })
 
     it("Should returns names for React Course", () => {
         var userList = users.getUserList("React Course")
-        expect(userList).toEqual(["Kobi"])
+        expect(userList).to.eql(["Kobi"])
     })
 
     it("Should remove a user", () => {
         var removed = users.removeUser(2)
-        console.log(removed)
-        expect(users.users.length).toEqual(2)
-        expect(removed.id).toBe(2)
+        expect(users.users.length).to.equal(2)
+        expect(removed.id).to.equal(2)
     })
 
     it("Should not remove a user", () => {
         var removed = users.removeUser(5)
-        expect(users.users.length).toEqual(3)
-        expect(removed).toBeFalsy()
+        expect(users.users.length).to.equal(3)
+        expect(removed).to.be.null
     })
 
     it("Should find a user", () => {
         var user = users.getUser(1);
-        expect(user.id).toBe(1)
+        expect(user.id).to.equal(1)
     })
 
     it("Should not find a user", () => {
         var user = users.getUser(5);
-        expect(user).toBeFalsy()
+        expect(user).to.be.null
     })
 })

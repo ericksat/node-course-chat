@@ -2,11 +2,26 @@
  * Users management
  */
 
-const {userList} = require('./userlist')
+const bannedNames = ["admin", "system"] // Keep them in lower-case, since that's how we will be doing our comparisons.
 
 class Users {
     constructor() {
         this.users = [];
+        // Taken names list - global (tried per room, but someone could impersonate you,) and only in lower case
+        this.userNames = {};
+    }
+
+    /**
+     * Tests restricted and already taken names, before adding
+     * 
+     * @param {String} name
+     */
+    canAddUser(name) {
+        name = name.toLowerCase() // For easier comparison
+        var banned = bannedNames.filter(userName => userName === name)
+        if (banned.length > 0) return false;
+        if (this.userNames[name]) return false;
+        return true;
     }
 
     /**
@@ -18,12 +33,23 @@ class Users {
      */
     addUser(id, name, room) {
         var user = {id, name: name.trim(), room: room.trim()}
-        if (!userList.canAddUser(user.name)) {
+        if (!this.canAddUser(user.name)) {
             throw Error("Name is taken or forbidden.")
         }
         this.users.push(user)
-        userList.addUser(user.name)
+        this.userNames[name.toLowerCase()] = true; // Keep this name in filtered list
         return user;
+    }
+
+    /**
+     * Adds multiple users at once
+     * 
+     * @param {Array} list of objects with id, name, room
+     */
+    addUsers(list) {
+        for (let user of list) {
+            this.addUser(user.id, user.name, user.room)
+        }
     }
 
     /**
@@ -36,7 +62,7 @@ class Users {
         if (!user) return null;
 
         this.users = this.users.filter(user => user.id !== id)
-        userList.removeUser(user.name)
+        delete this.userNames[user.name.toLowerCase()]
         return user;
     }
 

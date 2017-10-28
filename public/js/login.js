@@ -17,19 +17,26 @@ class Login {
             $("#login__form").on('submit', (e) => {
                 e.preventDefault();
                 this.tryLogin($("#login__name").val(), $("#login__room").val())
+                .then(() => {
+                    window.location.href = `/chat.html`
+                }).catch((e) => {
+                    alert(e.message)
+                })
             })
         })
     }
 
     tryLogin(name, room) {
-        socket.emit('login', {name, room}, (obj) => {
-            if (obj.error) {
-                alert("Error: " + obj.error);
-            } else {
-                window.localStorage.name = name;
-                window.localStorage.room = room;
-                window.location.href = `/chat.html`
-            }
+        return new Promise((resolve, reject) => {
+            socket.emit('login', {name, room}, (obj) => {
+                if (obj.error) {
+                    reject(new Error(obj.error));
+                } else {
+                    window.localStorage.name = name;
+                    window.localStorage.room = room;
+                    resolve({name, room})
+                }
+            })
         })
     }
 }

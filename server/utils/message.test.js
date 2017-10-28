@@ -1,4 +1,4 @@
-const expect = require('expect')
+const expect = require('chai').expect
 
 var {generateMessage, generateLocationMessage} = require('./message')
 
@@ -9,8 +9,8 @@ describe("Generate Message", () => {
 
         var message = generateMessage(from, text)
 
-        expect(message).toMatchObject({from, text})
-        expect(typeof message.createdAt).toBe("number")
+        expect(message).to.include({from, text})
+        expect(message.createdAt).to.be.a("number")
     })
 })
 
@@ -22,7 +22,7 @@ describe("Generate Location Message", () => {
         var correctUrl = `https://maps.google.com/maps?q=${lat},${lng}`
 
         var message = generateLocationMessage(from, lat, lng)
-        expect(message).toMatchObject({from, url: correctUrl})
-        expect(typeof message.createdAt).toBe("number")
+        expect(message).to.include({from, url: correctUrl})
+        expect(message.createdAt).to.be.a("number")
     })
 })

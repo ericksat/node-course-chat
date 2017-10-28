@@ -1,6 +1,5 @@
 // TODO: Phase1: general fixes
     // TODO: Add more test cases before refactoring.
-    // TODO: How to unit-test client code?
     // TODO: Refactor code with classes.
 // TODO: Phase2: Add a database (mongodb)
     // TODO: Actual accounts.
@@ -23,7 +22,6 @@ const bodyParser = require('body-parser')
 const {generateMessage, generateLocationMessage} = require('./utils/message')
 const {isRealString} = require('./utils/validation')
 const {Users} = require('./utils/users')
-const {userList} = require('./utils/userlist')
 
 const publicPath = path.join(__dirname, '../public');
 const PORT = process.env.PORT || 3000;
@@ -43,7 +41,7 @@ io.on("connection", (socket) => {
         var name = params.name.trim()
         var room = params.room.trim()
         try {
-            if (userList.canAddUser(name)) {
+            if (users.canAddUser(name)) {
                 callback({success:true})
             } else {
                 throw Error("Name is invalid or already taken.")

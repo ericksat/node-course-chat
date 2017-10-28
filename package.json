@@ -17,9 +17,10 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "moment": "^2.19.1",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.4"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "expect": "^21.2.1"
   }
 }
