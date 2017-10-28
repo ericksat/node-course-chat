@@ -1,8 +1,6 @@
-// TODO: Phase1: general fixes
-    // TODO: Add more test cases before refactoring.
-    // TODO: Refactor code with classes.
-// TODO: Phase2: Add a database (mongodb)
+// TODO: Phase2: Add a database (mongodb), with separate config file (config.json, add to .gitignore), test locally first
     // TODO: Actual accounts.
+    // TODO: Login should be token based rather than just name/room in localStorage - that prevents me from using 2 tabs properly.
     // TODO: Password locekd rooms.
     // TODO: Chat history, but only after we have password locked rooms
     // TODO: ** Chat history should only save messages up to amount (1000) or date(3-7 days)
@@ -11,6 +9,7 @@
     // TODO: Images should be resized to take less space, and deleted after a while.
     // TODO: Allow avatars for accounts (resized, but not deleted)
 // TODO: Low priority
+    // TODO: Add more test cases.
     // TODO: Disconnect design
 
 const path = require('path')

@@ -2,10 +2,6 @@
 
 var socket = io()
 
-socket.on('connect', function() {
-    console.log("Connected")
-})
-
 class Login {
     constructor() {
         this.isConnected = false;
@@ -23,6 +19,11 @@ class Login {
                     alert(e.message)
                 })
             })
+        })
+
+        socket.on('connect', function() {
+            console.log("Connected")
+            this.isConnected = true;
         })
     }
 
