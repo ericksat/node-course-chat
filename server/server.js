@@ -34,19 +34,32 @@ var io = socketIO(server)
 // Static files
 app.use(express.static(publicPath));
 
+var failures = {
+
+};
+
 // IO BEGIN
 io.on("connection", (socket) => {
 
     socket.on('login', (params, callback) => {
-        var name = params.name.trim()
-        var room = params.room.trim()
-        var roomPass = params.roomPass.trim()
-
         try {
+            if (failures[socket.id] && failures[socket.id] >= 5) {
+                throw Error("Too many password failures. Account locked.")
+            }
+
+            let name = params.name.trim()
+            let room = params.room.trim()
+            let roomPass = params.roomPass.trim()
+
             if (!users.canAddUser(name)) {
                 throw Error("Name is invalid or already taken.")
             }
             if (!rooms.tryJoin(room, roomPass)) {
+                if (failures[socket.id] === undefined) {
+                    failures[socket.id] = 1;
+                } else {
+                    failures[socket.id]++;
+                }
                 throw Error("Room password is incorrect.")
             }
             callback({success:true})
@@ -62,6 +75,10 @@ io.on("connection", (socket) => {
             if (!isRealString(params.name) || !isRealString(params.room)) {
                 throw Error("A valid name & room name are required.")
             }
+            if (failures[socket.id] && failures[socket.id] >= 5) {
+                throw Error("Too many password failures. Account locked.")
+            }
+
             console.log(`User ${params.name} connected to ${params.room}`)
             socket.join(params.room)
             users.removeUser(socket.id)
