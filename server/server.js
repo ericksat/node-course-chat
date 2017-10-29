@@ -1,7 +1,6 @@
 // TODO: Phase2: Add a database (mongodb), with separate config file (config.json, add to .gitignore), test locally first
     // TODO: Actual accounts.
     // TODO: Login should be token based rather than just name/room in localStorage - that prevents me from using 2 tabs properly.
-    // TODO: Password locekd rooms.
     // TODO: Chat history, but only after we have password locked rooms
     // TODO: ** Chat history should only save messages up to amount (1000) or date(3-7 days)
 // TODO: Phase3: Images
@@ -18,9 +17,12 @@ const express = require('express')
 const socketIO = require('socket.io')
 const bodyParser = require('body-parser')
 
+require('./config/config')
 const {generateMessage, generateLocationMessage} = require('./utils/message')
 const {isRealString} = require('./utils/validation')
-const {Users} = require('./utils/users')
+const {users} = require('./utils/users')
+const {rooms} = require('./utils/rooms')
+// const db = require('./db/db')
 
 const publicPath = path.join(__dirname, '../public');
 const PORT = process.env.PORT || 3000;
@@ -28,7 +30,6 @@ const PORT = process.env.PORT || 3000;
 var app = express()
 var server = http.createServer(app)
 var io = socketIO(server)
-var users = new Users()
 
 // Static files
 app.use(express.static(publicPath));
@@ -39,12 +40,16 @@ io.on("connection", (socket) => {
     socket.on('login', (params, callback) => {
         var name = params.name.trim()
         var room = params.room.trim()
+        var roomPass = params.roomPass.trim()
+
         try {
-            if (users.canAddUser(name)) {
-                callback({success:true})
-            } else {
+            if (!users.canAddUser(name)) {
                 throw Error("Name is invalid or already taken.")
             }
+            if (!rooms.tryJoin(room, roomPass)) {
+                throw Error("Room password is incorrect.")
+            }
+            callback({success:true})
         } catch (e) {
             console.log("Failed login")
             callback({success: false, error: e.message})

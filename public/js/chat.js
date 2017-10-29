@@ -5,8 +5,8 @@ var socket = io()
 class Chat {
     constructor() {
         this.unread = 0;
-        this.room = localStorage.room || "";
-        this.me = localStorage.name || "";
+        this.room = sessionStorage.room || "";
+        this.me = sessionStorage.name || "";
 
         this.addDomEvents()
         this.addSocketEvents()

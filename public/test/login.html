@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>Unit Tests</title>
-        <link rel="stylesheet" href="/css/mocha.css">        
+        <link rel="stylesheet" href="/css/mocha.css">
         <script src="/js/libs/jquery-3.2.1.min.js"></script>
         <script src="/js/libs/mocha.js"></script>
         <script src="/js/libs/chai.js"></script>
@@ -28,19 +28,22 @@
 
     describe("Login", () => {
         it("Should be empty at beginning", () => {
-            expect(localStorage.name).to.equal(undefined)
-            expect(localStorage.room).to.equal(undefined)
+            expect(sessionStorage.name).to.equal(undefined)
+            expect(sessionStorage.room).to.equal(undefined)
+            expect(sessionStorage.roomPass).to.equal(undefined)
         })
 
         it("Should succeed at login", (done) => {
             var name = "NameTest";
             var room = "TestRoom";
+            var password = "MyPass";
 
-            login.tryLogin(name, room).then((obj) => {
+            login.tryLogin(name, room, password).then((obj) => {
                 expect(obj.name).to.equal(name)
                 expect(obj.room).to.equal(room)
-                expect(localStorage.name).to.equal(name)
-                expect(localStorage.room).to.equal(room)
+                expect(sessionStorage.name).to.equal(name)
+                expect(sessionStorage.room).to.equal(room)
+                expect(sessionStorage.roomPass).to.equal(password)
                 done()
             }).catch((e) => {
                 done(e)
@@ -51,7 +54,7 @@
             var name = "Admin";
             var room = "TestRoom";
 
-            login.tryLogin(name, room).then((obj) => {
+            login.tryLogin(name, room, "").then((obj) => {
                 throw new Error("Did not throw proper error")
             }).catch((e) => {
                 if (e.message === "Name is invalid or already taken.") {
@@ -59,7 +62,23 @@
                 } else {
                     done(e)
                 }
-            })            
+            })
+        })
+
+        it("Should not login with wrong room password", (done) => {
+            var name = "NameTest2";
+            var room = "TestRoom";
+            var password = "WrongPass";
+
+            login.tryLogin(name, room, password).then((obj) => {
+                throw new Error("Did not throw proper error")
+            }).catch((e) => {
+                if (e.message === "Room password is incorrect.") {
+                    done()
+                } else {
+                    done(e)
+                }
+            })
         })
     })
 

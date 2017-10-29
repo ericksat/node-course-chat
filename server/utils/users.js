@@ -13,7 +13,7 @@ class Users {
 
     /**
      * Tests restricted and already taken names, before adding
-     * 
+     *
      * @param {String} name
      */
     canAddUser(name) {
@@ -43,7 +43,7 @@ class Users {
 
     /**
      * Adds multiple users at once
-     * 
+     *
      * @param {Array} list of objects with id, name, room
      */
     addUsers(list) {
@@ -81,4 +81,6 @@ class Users {
     }
 }
 
-module.exports = { Users }
+var users = new Users()
+
+module.exports = { users }
